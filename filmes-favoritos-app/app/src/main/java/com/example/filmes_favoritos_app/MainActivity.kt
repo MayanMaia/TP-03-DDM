@@ -1,20 +1,36 @@
 package com.example.filmes_favoritos_app
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
+    private val filmeDao = FilmeDaoImpl
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        val editTextTitulo = findViewById<EditText>(R.id.editText_titulo)
+        val editTextDiretor = findViewById<EditText>(R.id.editText_diretor)
+        val buttonAdicionar = findViewById<Button>(R.id.button_adicionar)
+        val buttonListarFilmes = findViewById<Button>(R.id.button_listar_filmes)
+
+        buttonAdicionar.setOnClickListener {
+            val titulo = editTextTitulo.text.toString()
+            val diretor = editTextDiretor.text.toString()
+            val filme = Filme(titulo, diretor)
+            filmeDao.adicionarFilme(filme)
+            editTextTitulo.text.clear()
+            editTextDiretor.text.clear()
+        }
+
+        buttonListarFilmes.setOnClickListener {
+            val intent = Intent(this, ListaFilmesActivity::class.java)
+            startActivity(intent)
         }
     }
 }
